@@ -92,7 +92,7 @@ def plot_heatmap_slice(
         Z = np.zeros((len(y_range), len(x_range)), dtype=float)
 
         # Tworzymy listę wszystkich indeksów (i, j) i iterujemy przez nią z tqdm
-        total_iterations = len(y_range) * len(x_range)
+        # total_iterations = len(y_range) * len(x_range)
 
         # Używamy enumerate na y_range i x_range, aby uzyskać indeksy macierzy Z
 
