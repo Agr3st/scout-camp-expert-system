@@ -2,6 +2,8 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from src.fuzzy.visualizations import plot_heatmap_slice
+import pandas as pd
+from datetime import datetime, timedelta, timezone
 
 
 TEMP_MIN = 0
@@ -253,7 +255,7 @@ class WeatherLogicSystem:
 
         return min(risk_value, 100)
 
-    def evaluate_risk(
+    def assess_risk(
         self, temperatura, wiatr, deszcz, weather_code
     ) -> tuple[float, float]:
         """
@@ -274,6 +276,87 @@ class WeatherLogicSystem:
 
         return fuzzy_risk, final_risk
 
+    def assess_risk_forecast_df(self, forecast_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Oblicza poziom zagrożenia dla prognozy godzinowej.
+
+        Parametry:
+            forecast_df (pd.DataFrame): DataFrame z kolumnami:
+                - date
+                - temperature_2m
+                - weather_code
+                - wind_speed_10m
+                - rain
+
+        Zwraca:
+            pd.DataFrame z kolumnami:
+                - date
+                - fuzzy_risk
+                - final_risk
+        """
+
+        results = []
+
+        for _, row in forecast_df.iterrows():
+
+            fuzzy_risk, final_risk = self.assess_risk(
+                temperatura=row["temperature_2m"],
+                wiatr=row["wind_speed_10m"],
+                deszcz=row["rain"],
+                weather_code=row["weather_code"],
+            )
+
+            results.append(
+                {
+                    "date": row["date"],
+                    "fuzzy_risk": fuzzy_risk,
+                    "final_risk": final_risk,
+                }
+            )
+
+        return pd.DataFrame(results)
+
+    def assess_risk_next_hour(self, forecast_df: pd.DataFrame) -> dict:
+        """
+        Określa poziom zagrożenia dla najbliższej godziny od momentu wywołania.
+
+        Parametry:
+            forecast_df (pd.DataFrame): DataFrame z kolumnami:
+                - date
+                - temperature_2m
+                - weather_code
+                - wind_speed_10m
+                - rain
+
+        Zwraca:
+            dict z kluczami:
+                - target_time
+                - fuzzy_risk
+                - final_risk
+        """
+
+        now = datetime.now(timezone.utc)
+        target_time = now + timedelta(hours=1)
+
+        df = forecast_df.copy()
+        # df["date"] = pd.to_datetime(df["date"])
+
+        df["time_diff"] = (df["date"] - target_time).abs()
+        row = df.loc[df["time_diff"].idxmin()]
+
+        fuzzy_risk, final_risk = self.assess_risk(
+            temperatura=row["temperature_2m"],
+            wiatr=row["wind_speed_10m"],
+            deszcz=row["rain"],
+            weather_code=row["weather_code"],
+        )
+
+        return {
+            "target_time": row["date"],
+            "fuzzy_risk": fuzzy_risk,
+            "final_risk": final_risk,
+        }
+
 
 if __name__ == "__main__":
 
@@ -288,6 +371,7 @@ if __name__ == "__main__":
     try:
 
         # --- WIZUALIZACJA PEŁNEJ BAZY REGUŁ (TRZY ZESTAWY HEATMAP) ---
+
         print("\n--- ZESTAW 1: Wiatr vs. Temperatura (przy stałym Deszczu) ---")
         plot_heatmap_slice(
             weather.system,
