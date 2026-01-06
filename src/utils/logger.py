@@ -1,6 +1,7 @@
 import logging
 import os
-from src.utils.config import load_config, get_project_root
+
+from src.utils.config import get_project_root, load_config
 
 
 def setup_logger() -> logging.Logger:
