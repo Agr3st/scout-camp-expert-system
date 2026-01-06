@@ -23,6 +23,7 @@ This project is part of my engineering thesis at **AGH University of Science and
 
 ```git
 git clone https://github.com/Agr3st/scout-camp-expert-system.git
+```
 
 ```bash
 cd scout-camp-expert-system
@@ -32,6 +33,8 @@ cd scout-camp-expert-system
 
 ```bash
 python3 -m venv .venv
+```
+```bash
 source .venv/bin/activate
 ```
 
@@ -39,6 +42,8 @@ source .venv/bin/activate
 
 ```bash
 pip install --upgrade pip
+```
+```
 pip install -r requirements.txt
 ```
 
@@ -48,6 +53,8 @@ From the project root directory:
 
 ```bash
 export PYTHONPATH=$(pwd)
+```
+```bash
 streamlit run src/app.py
 ```
 
@@ -55,6 +62,8 @@ streamlit run src/app.py
 
 ```powershell
 $env:PYTHONPATH = (Get-Location)
+```
+```powershell
 streamlit run src/app.py
 ```
 
