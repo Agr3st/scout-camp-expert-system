@@ -16,7 +16,7 @@ botocore==1.42.23
 brotli==1.2.0
 brotlicffi==1.2.0.0
 cairocffi==1.7.1
-Carbon==1.1.10
+#Carbon==1.1.10
 chardet==5.2.0
 checks==0.2
 ConfigParser==7.2.0
