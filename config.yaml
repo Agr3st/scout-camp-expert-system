@@ -1,3 +1,30 @@
 logging:
   level: INFO
   file: logs/app.log
+
+linguistic_colors:
+  wiatr:
+    słaby: "#2ca02c"        # zielony
+    umiarkowany: "#1f77b4"  # niebieski
+    silny: "#ff7f0e"        # pomarańczowy
+    wichura: "#d62728"      # czerwony
+
+  temperatura:
+    niska: "#d62728"        # czerwony
+    umiarkowana: "#2ca02c"  # zielony
+    wysoka: "#d62728"       # czerwony
+
+  deszcz:
+    brak: "#2ca02c"         # zielony
+    lekki: "#2ca02c"        # zielony
+    umiarkowany: "#1f77b4"  # niebieski
+    ulewny: "#d62728"       # czerwony
+
+  burza:
+    nie: "#2ca02c"          # zielony
+    tak: "#d62728"          # czerwony
+
+  zagrożenie:
+    niskie: "#2ca02c"       # zielony
+    średnie: "#ff7f0e"      # niebieski
+    wysokie: "#d62728"      # czerwony
