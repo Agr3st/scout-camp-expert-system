@@ -1,8 +1,8 @@
 import matplotlib
-from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 import numpy as np
+from skfuzzy import control as ctrl
+from tqdm import tqdm
 
 UNIT_MAP = {"temperatura": "[°C]", "deszcz": "[mm/h]", "wiatr": "[m/s]"}
 
