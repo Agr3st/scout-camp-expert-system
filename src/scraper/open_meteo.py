@@ -1,6 +1,6 @@
+import openmeteo_requests
 import pandas as pd
 import requests_cache
-import openmeteo_requests
 from openmeteo_sdk.WeatherApiResponse import WeatherApiResponse
 from retry_requests import retry
 
@@ -45,7 +45,6 @@ def _fetch_weather_response(
     }
 
     responses = client.weather_api(url, params=params)
-    print(type(responses[0]))
     return responses[0]  # single location
 
 
@@ -55,10 +54,17 @@ def _parse_hourly_to_dataframe(response) -> pd.DataFrame:
     """
     hourly = response.Hourly()
 
+    start_dt = pd.to_datetime(hourly.Time(), unit="s", utc=True).tz_convert(
+        "Europe/Berlin"
+    )
+    end_dt = pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True).tz_convert(
+        "Europe/Berlin"
+    )
+
     data = {
         "date": pd.date_range(
-            start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
-            end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+            start=start_dt,
+            end=end_dt,
             freq=pd.Timedelta(seconds=hourly.Interval()),
             inclusive="left",
         ),
@@ -68,7 +74,6 @@ def _parse_hourly_to_dataframe(response) -> pd.DataFrame:
         "rain": hourly.Variables(3).ValuesAsNumpy(),
         "wind_gusts_10m": hourly.Variables(4).ValuesAsNumpy(),
     }
-
     return pd.DataFrame(data)
 
 
