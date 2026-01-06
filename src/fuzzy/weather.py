@@ -1,10 +1,9 @@
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
-from src.fuzzy.visualizations import plot_heatmap_slice
-import pandas as pd
-from datetime import datetime, timedelta, timezone
-
+from skfuzzy.control import Antecedent, Consequent, Rule
 
 TEMP_MIN = 0
 TEMP_MAX = 40
@@ -35,7 +34,7 @@ class WeatherLogicSystem:
         self.system = ctrl.ControlSystem(self.rules)
 
     @staticmethod
-    def _create_variables():
+    def _create_variables() -> tuple[Antecedent, Antecedent, Antecedent, Consequent]:
         """Definicja zmiennych wejściowych i wyjściowych"""
         temperatura = ctrl.Antecedent(np.arange(0, 41, 1), "temperatura")
         wiatr = ctrl.Antecedent(np.arange(0, 25, 0.1), "wiatr")
@@ -47,7 +46,12 @@ class WeatherLogicSystem:
         return temperatura, wiatr, deszcz, zagrozenie
 
     @staticmethod
-    def _set_membership_functions(temperatura, wiatr, deszcz, zagrozenie):
+    def _set_membership_functions(
+        temperatura: Antecedent,
+        wiatr: Antecedent,
+        deszcz: Antecedent,
+        zagrozenie: Consequent,
+    ) -> None:
         """Funkcje przynależności."""
 
         # TEMPERATURA: niska, umiarkowana, wysoka
@@ -62,7 +66,6 @@ class WeatherLogicSystem:
         )  # wysoka to 30+
 
         # WIATR: słaby, umiarkowany, silny, wichura
-        # https://pl.wikipedia.org/wiki/Skala_Beauforta
         wiatr["słaby"] = fuzz.trapmf(
             wiatr.universe, [0, 0, 1.6, 5.5]
         )  # 0-2, początek w 0, koniec cała 3.
@@ -78,7 +81,6 @@ class WeatherLogicSystem:
         )  # 8+, początek od początku 6., środek w końcu 8, dalej bez końca
 
         # DESZCZ: lekki, umiarkowany, ulewny
-        # https://pl.wikipedia.org/wiki/Deszcz
         deszcz["lekki"] = fuzz.trapmf(deszcz.universe, [0, 0, 1.5, 3.5])
         deszcz["umiarkowany"] = fuzz.trimf(deszcz.universe, [1.5, 5.0, 8.5])
         deszcz["ulewny"] = fuzz.trapmf(deszcz.universe, [6.5, 8.5, 10, 10])
@@ -89,7 +91,12 @@ class WeatherLogicSystem:
         zagrozenie["wysokie"] = fuzz.trapmf(zagrozenie.universe, [60, 75, 100, 100])
 
     @staticmethod
-    def _define_rules(temperatura, wiatr, deszcz, zagrozenie):
+    def _define_rules(
+        temperatura: Antecedent,
+        wiatr: Antecedent,
+        deszcz: Antecedent,
+        zagrozenie: Consequent,
+    ) -> list[Rule]:
         """Baza reguł."""
         rules = [
             # TEMPERATURA NISKA
@@ -255,8 +262,76 @@ class WeatherLogicSystem:
 
         return min(risk_value, 100)
 
+    def _interpret(
+        self, variable: Antecedent | Consequent, labels: list[str], value: float
+    ) -> str:
+        """
+        Zwraca etykietę lingwistyczną o najwyższym stopniu przynależności.
+
+        Parametry:
+            variable : skfuzzy.control.Antecedent lub Consequent
+            labels   : lista nazw zbiorów lingwistycznych
+            value    : wartość liczbowa
+
+        Zwraca:
+            str: etykieta lingwistyczna (np. 'umiarkowany')
+        """
+        memberships = {
+            label: fuzz.interp_membership(
+                variable.universe,
+                variable[label].mf,
+                value,
+            )
+            for label in labels
+        }
+
+        return max(memberships, key=memberships.get)
+
+    def interpret_temperature(self, value: float) -> str:
+        return self._interpret(
+            variable=self.temperatura,
+            labels=["niska", "umiarkowana", "wysoka"],
+            value=value,
+        )
+
+    def interpret_wind(self, value: float) -> str:
+        return self._interpret(
+            variable=self.wiatr,
+            labels=["słaby", "umiarkowany", "silny", "wichura"],
+            value=value,
+        )
+
+    def interpret_rain(self, value: float) -> str:
+        """
+        UWAGA:
+        W razie braku deszczu dodawana jest dodatkowa etykieta - 'brak',
+        której nie wykorzystuje się do obliczeń w systemie logiki.
+        """
+        if value == 0.0:
+            return "brak"
+        return self._interpret(
+            variable=self.deszcz,
+            labels=["lekki", "umiarkowany", "ulewny"],
+            value=value,
+        )
+
+    def interpret_risk(self, value: float) -> str:
+        return self._interpret(
+            variable=self.zagrozenie,
+            labels=["niskie", "średnie", "wysokie"],
+            value=value,
+        )
+
+    def interpret_weather_code(self, code: int) -> str:
+        return "tak" if int(code) in THUNDER_WEATHER_CODES else "nie"
+
     def assess_risk(
-        self, temperatura, wiatr, deszcz, weather_code
+        self,
+        temperatura: float,
+        wiatr: float,
+        deszcz: float,
+        weather_code: int,
+        visualize=False,
     ) -> tuple[float, float]:
         """
         Oblicza ryzyko na podstawie wartości wejściowych oraz flagi burzy.
@@ -274,25 +349,30 @@ class WeatherLogicSystem:
 
         final_risk = self._apply_binary_effects(fuzzy_risk, weather_code)
 
+        if visualize:
+            print("=== WIZUALIZACJA WNIOSKOWANIA ===")
+            print(f"Temperatura: {temperatura}")
+            print(f"Wiatr: {wiatr}")
+            print(f"Deszcz: {deszcz}")
+            print(f"Zagrożenie (fuzzy): {fuzzy_risk:.2f}")
+            print(f"Zagrożenie (final): {final_risk:.2f}")
+
+            # Wykresy aktywacji zmiennych wejściowych
+            self.temperatura.view(sim=sim)
+            self.wiatr.view(sim=sim)
+            self.deszcz.view(sim=sim)
+
+            # Wykres zmiennej wyjściowej z zaznaczonym wynikiem
+            self.zagrozenie.view(sim=sim)
+
+            plt.show()
+
         return fuzzy_risk, final_risk
 
     def assess_risk_forecast_df(self, forecast_df: pd.DataFrame) -> pd.DataFrame:
         """
-        Oblicza poziom zagrożenia dla prognozy godzinowej.
-
-        Parametry:
-            forecast_df (pd.DataFrame): DataFrame z kolumnami:
-                - date
-                - temperature_2m
-                - weather_code
-                - wind_speed_10m
-                - rain
-
-        Zwraca:
-            pd.DataFrame z kolumnami:
-                - date
-                - fuzzy_risk
-                - final_risk
+        Oblicza poziom zagrożenia dla prognozy godzinowej
+        i dodaje interpretacje lingwistyczne.
         """
 
         results = []
@@ -311,48 +391,16 @@ class WeatherLogicSystem:
                     "date": row["date"],
                     "fuzzy_risk": fuzzy_risk,
                     "final_risk": final_risk,
+                    "temperature_linguistic": self.interpret_temperature(
+                        row["temperature_2m"]
+                    ),
+                    "wind_linguistic": self.interpret_wind(row["wind_speed_10m"]),
+                    "rain_linguistic": self.interpret_rain(row["rain"]),
+                    "thunder_linguistic": self.interpret_weather_code(
+                        row["weather_code"]
+                    ),
+                    "risk_linguistic": self.interpret_risk(final_risk),
                 }
             )
 
         return pd.DataFrame(results)
-
-    def assess_risk_next_hour(self, forecast_df: pd.DataFrame) -> dict:
-        """
-        Określa poziom zagrożenia dla najbliższej godziny od momentu wywołania.
-
-        Parametry:
-            forecast_df (pd.DataFrame): DataFrame z kolumnami:
-                - date
-                - temperature_2m
-                - weather_code
-                - wind_speed_10m
-                - rain
-
-        Zwraca:
-            dict z kluczami:
-                - target_time
-                - fuzzy_risk
-                - final_risk
-        """
-
-        now = datetime.now(timezone.utc)
-        target_time = now + timedelta(hours=1)
-
-        df = forecast_df.copy()
-        # df["date"] = pd.to_datetime(df["date"])
-
-        df["time_diff"] = (df["date"] - target_time).abs()
-        row = df.loc[df["time_diff"].idxmin()]
-
-        fuzzy_risk, final_risk = self.assess_risk(
-            temperatura=row["temperature_2m"],
-            wiatr=row["wind_speed_10m"],
-            deszcz=row["rain"],
-            weather_code=row["weather_code"],
-        )
-
-        return {
-            "target_time": row["date"],
-            "fuzzy_risk": fuzzy_risk,
-            "final_risk": final_risk,
-        }
