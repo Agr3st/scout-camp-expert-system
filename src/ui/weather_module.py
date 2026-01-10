@@ -53,10 +53,35 @@ for var_name, var in weather_inputs.items():
     )
 
 # wykres
-st.markdown("### Wykres poziomu zagrożenia")
+st.markdown("### Wykresy zmienności w czasie")
 
+st.markdown("#### Poziom zagrożenia")
 st.line_chart(
     st.session_state["weather_risk_df"].set_index("date")[["final_risk"]],
     x_label="Godzina",
     y_label="Poziom zagrożenia",
+)
+
+st.markdown("#### Temperatura odczuwalna")
+
+st.line_chart(
+    st.session_state["weather_forecast_df"].set_index("date")[["temperature_2m"]],
+    x_label="Godzina",
+    y_label="Temperatura",
+)
+
+st.markdown("#### Prędkość wiatru")
+
+st.line_chart(
+    st.session_state["weather_forecast_df"].set_index("date")[["wind_speed_10m"]],
+    x_label="Godzina",
+    y_label="Prędkość wiatru",
+)
+
+st.markdown("#### Opady deszczu")
+
+st.line_chart(
+    st.session_state["weather_forecast_df"].set_index("date")[["rain"]],
+    x_label="Godzina",
+    y_label="Deszcz",
 )

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 import streamlit as st
 
-from src.fuzzy.weather import WeatherLogicSystem
+from src.fuzzy.weather import WeatherRiskModule
 from src.scraper.open_meteo import get_hourly_weather_forecast
 from src.utils.logger import setup_logger
 from src.utils.session import get_closest_hour_df_row
@@ -26,7 +26,7 @@ def update_weather(lat: float, lon: float) -> None:
 
     forecast_df = get_hourly_weather_forecast(lat, lon)
 
-    logic = WeatherLogicSystem()
+    logic = WeatherRiskModule()
     risk_df = logic.assess_risk_forecast_df(forecast_df)
 
     st.session_state["weather_forecast_df"] = forecast_df
