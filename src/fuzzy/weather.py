@@ -4,13 +4,10 @@ import pandas as pd
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from skfuzzy.control import Antecedent, Consequent, Rule
+from src.utils.config import load_config
+from src.utils.logger import setup_logger
 
-TEMP_MIN = 0
-TEMP_MAX = 40
-WIATR_MIN = 0
-WIATR_MAX = 25
-DESZCZ_MIN = 0
-DESZCZ_MAX = 10
+logger = setup_logger()
 THUNDER_PENALTY = 20  # zmienna jakościowa (dodawane 20 pkt do finalnego zagrożenia)
 THUNDER_WEATHER_CODES = [
     95,
@@ -19,7 +16,7 @@ THUNDER_WEATHER_CODES = [
 ]  # kody dla burzy zgodnie z: https://open-meteo.com/en/docs#weather_variable_documentation
 
 
-class WeatherLogicSystem:
+class WeatherRiskModule:
 
     def __init__(self):
         self.temperatura, self.wiatr, self.deszcz, self.zagrozenie = (
@@ -28,6 +25,7 @@ class WeatherLogicSystem:
         self._set_membership_functions(
             self.temperatura, self.wiatr, self.deszcz, self.zagrozenie
         )
+        self.rules_config = load_config().get("weather_rules", {})
         self.rules = self._define_rules(
             self.temperatura, self.wiatr, self.deszcz, self.zagrozenie
         )
@@ -90,165 +88,37 @@ class WeatherLogicSystem:
         zagrozenie["średnie"] = fuzz.trimf(zagrozenie.universe, [25, 50, 75])
         zagrozenie["wysokie"] = fuzz.trapmf(zagrozenie.universe, [60, 75, 100, 100])
 
-    @staticmethod
     def _define_rules(
+        self,
         temperatura: Antecedent,
         wiatr: Antecedent,
         deszcz: Antecedent,
         zagrozenie: Consequent,
     ) -> list[Rule]:
-        """Baza reguł."""
-        rules = [
-            # TEMPERATURA NISKA
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["słaby"] & deszcz["lekki"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["słaby"] & deszcz["umiarkowany"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["słaby"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["umiarkowany"] & deszcz["lekki"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["umiarkowany"] & deszcz["umiarkowany"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["umiarkowany"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["silny"] & deszcz["lekki"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["silny"] & deszcz["umiarkowany"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["silny"] & deszcz["ulewny"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["wichura"] & deszcz["lekki"],
-                zagrozenie["wysokie"],
-            ),  #
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["wichura"] & deszcz["umiarkowany"],
-                zagrozenie["wysokie"],
-            ),  #
-            ctrl.Rule(
-                temperatura["niska"] & wiatr["wichura"] & deszcz["ulewny"],
-                zagrozenie["wysokie"],
-            ),  #
-            # TEMPERATURA UMIARKOWANA
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["słaby"] & deszcz["lekki"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["słaby"] & deszcz["umiarkowany"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["słaby"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["umiarkowany"] & deszcz["lekki"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"]
-                & wiatr["umiarkowany"]
-                & deszcz["umiarkowany"],
-                zagrozenie["niskie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["umiarkowany"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["silny"] & deszcz["lekki"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["silny"] & deszcz["umiarkowany"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["silny"] & deszcz["ulewny"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["wichura"] & deszcz["lekki"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["wichura"] & deszcz["umiarkowany"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["umiarkowana"] & wiatr["wichura"] & deszcz["ulewny"],
-                zagrozenie["wysokie"],
-            ),
-            # TEMPERATURA WYSOKA
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["słaby"] & deszcz["lekki"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["słaby"] & deszcz["umiarkowany"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["słaby"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["umiarkowany"] & deszcz["lekki"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["umiarkowany"] & deszcz["umiarkowany"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["umiarkowany"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["silny"] & deszcz["lekki"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["silny"] & deszcz["umiarkowany"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["silny"] & deszcz["ulewny"],
-                zagrozenie["średnie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["wichura"] & deszcz["lekki"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["wichura"] & deszcz["umiarkowany"],
-                zagrozenie["wysokie"],
-            ),
-            ctrl.Rule(
-                temperatura["wysoka"] & wiatr["wichura"] & deszcz["ulewny"],
-                zagrozenie["wysokie"],
-            ),
-        ]
+
+        variable_map = {
+            "temperatura": temperatura,
+            "wiatr": wiatr,
+            "deszcz": deszcz,
+            "zagrozenie": zagrozenie,
+        }
+
+        rules = []
+
+        for rule_def in self.rules_config:
+            conditions = []
+
+            for var_name, label in rule_def["if"].items():
+                conditions.append(variable_map[var_name][label])
+
+            antecedent = conditions[0]
+            for cond in conditions[1:]:
+                antecedent &= cond
+
+            consequent_label = rule_def["then"]["zagrozenie"]
+            consequent = zagrozenie[consequent_label]
+
+            rules.append(ctrl.Rule(antecedent, consequent))
 
         return rules
 

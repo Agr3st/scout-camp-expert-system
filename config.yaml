@@ -28,3 +28,226 @@ linguistic_colors:
     niskie: "#2ca02c"       # zielony
     średnie: "#ff7f0e"      # niebieski
     wysokie: "#d62728"      # czerwony
+
+weather_rules:
+  # TEMPERATURA NISKA
+  - if:
+      temperatura: niska
+      wiatr: słaby
+      deszcz: lekki
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: niska
+      wiatr: słaby
+      deszcz: umiarkowany
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: niska
+      wiatr: słaby
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: niska
+      wiatr: umiarkowany
+      deszcz: lekki
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: niska
+      wiatr: umiarkowany
+      deszcz: umiarkowany
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: niska
+      wiatr: umiarkowany
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: niska
+      wiatr: silny
+      deszcz: lekki
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: niska
+      wiatr: silny
+      deszcz: umiarkowany
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: niska
+      wiatr: silny
+      deszcz: ulewny
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: niska
+      wiatr: wichura
+      deszcz: lekki
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: niska
+      wiatr: wichura
+      deszcz: umiarkowany
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: niska
+      wiatr: wichura
+      deszcz: ulewny
+    then:
+      zagrozenie: wysokie
+
+  # TEMPERATURA UMIARKOWANA
+  - if:
+      temperatura: umiarkowana
+      wiatr: słaby
+      deszcz: lekki
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: umiarkowana
+      wiatr: słaby
+      deszcz: umiarkowany
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: umiarkowana
+      wiatr: słaby
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: umiarkowana
+      wiatr: umiarkowany
+      deszcz: lekki
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: umiarkowana
+      wiatr: umiarkowany
+      deszcz: umiarkowany
+    then:
+      zagrozenie: niskie
+  - if:
+      temperatura: umiarkowana
+      wiatr: umiarkowany
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: umiarkowana
+      wiatr: silny
+      deszcz: lekki
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: umiarkowana
+      wiatr: silny
+      deszcz: umiarkowany
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: umiarkowana
+      wiatr: silny
+      deszcz: ulewny
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: umiarkowana
+      wiatr: wichura
+      deszcz: lekki
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: umiarkowana
+      wiatr: wichura
+      deszcz: umiarkowany
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: umiarkowana
+      wiatr: wichura
+      deszcz: ulewny
+    then:
+      zagrozenie: wysokie
+
+  # TEMPERATURA WYSOKA
+  - if:
+      temperatura: wysoka
+      wiatr: słaby
+      deszcz: lekki
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: wysoka
+      wiatr: słaby
+      deszcz: umiarkowany
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: słaby
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: umiarkowany
+      deszcz: lekki
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: wysoka
+      wiatr: umiarkowany
+      deszcz: umiarkowany
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: umiarkowany
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: silny
+      deszcz: lekki
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: silny
+      deszcz: umiarkowany
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: silny
+      deszcz: ulewny
+    then:
+      zagrozenie: średnie
+  - if:
+      temperatura: wysoka
+      wiatr: wichura
+      deszcz: lekki
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: wysoka
+      wiatr: wichura
+      deszcz: umiarkowany
+    then:
+      zagrozenie: wysokie
+  - if:
+      temperatura: wysoka
+      wiatr: wichura
+      deszcz: ulewny
+    then:
+      zagrozenie: wysokie
