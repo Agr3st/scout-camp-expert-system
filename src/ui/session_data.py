@@ -36,6 +36,14 @@ def render_value(title: str, value):
 
 
 # -------------------------------------------------
+# RAW SESSION STATE
+# -------------------------------------------------
+with st.expander("🧪 Surowy st.session_state (debug)", expanded=False):
+    st.json({k: str(v) for k, v in st.session_state.items()})
+
+
+st.markdown("## Moduł pogodowy")
+# -------------------------------------------------
 # LOCATION
 # -------------------------------------------------
 if "location" in st.session_state:
@@ -65,8 +73,17 @@ if "weather_risk_df" in st.session_state:
         st.session_state.weather_risk_df,
     )
 
-# -------------------------------------------------
-# RAW SESSION STATE
-# -------------------------------------------------
-with st.expander("🧪 Surowy st.session_state (debug)", expanded=False):
-    st.json({k: str(v) for k, v in st.session_state.items()})
+
+st.markdown("## Moduł organizacyjny")
+
+if "organization_df" in st.session_state:
+    render_dataframe(
+        "Dane organizacyjne i ocena ryzyka",
+        st.session_state.organization_df,
+    )
+
+if "organization_linguistic_df" in st.session_state:
+    render_dataframe(
+        "Dane organizacyjne i ocena ryzyka - wartości lingwistyczne",
+        st.session_state.organization_linguistic_df,
+    )

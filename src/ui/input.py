@@ -2,6 +2,7 @@ import folium
 import streamlit as st
 from streamlit_folium import st_folium
 
+from src.utils.organization_orchestrator import update_organization_risk
 from src.utils.weather_orchestrator import update_weather
 
 POLAND_BOUNDS = {
@@ -9,7 +10,39 @@ POLAND_BOUNDS = {
     "north_east": [54.9, 24.2],
 }
 
+
 st.title("Dane wejściowe systemu")
+
+# PODSUMOWANIE
+st.markdown("### Aktualna konfiguracja")
+
+cfg = st.session_state.location
+
+if cfg["lat"] is not None:
+    st.info(
+        f"""
+        **LAT:** {cfg['lat']:.4f}  
+        **LON:** {cfg['lon']:.4f}  
+        """
+    )
+else:
+    st.warning("Lokalizacja nie została jeszcze ustawiona.")
+
+cfg = st.session_state.organization_df
+if len(cfg) > 0:
+    st.info(
+        f"""
+        **Liczba uczestników:** {cfg.iloc[0]['liczba_uczestnikow']}  
+        **Doświadczenie kadry (ocena 0-10):** {cfg.iloc[0]['doswiadczenie_kadry']}  
+        """
+    )
+else:
+    st.warning("Dane organizacyjne nie zostały jeszcze ustawione.")
+
+st.markdown("---")
+
+
+# Lokalizacja
 st.markdown("## Lokalizacja")
 st.caption(
     "Wybierz lokalizację obozu – dane zostaną użyte do pobrania prognozy "
@@ -89,28 +122,54 @@ else:
 
 # zapis lokalizacji
 if st.button("Zapisz lokalizację"):
-    st.session_state.location.update(
-        {
-            "lat": lat,
-            "lon": lon,
-        }
+    if lat and lon:
+        st.session_state.location.update(
+            {
+                "lat": lat,
+                "lon": lon,
+            }
+        )
+        st.success("Lokalizacja zapisana")
+        # zapis -> trigger dla weather pipeline
+        update_weather(lat, lon)
+    else:
+        st.info("Lokalizacja nie została jeszcze wybrana.")
+
+# Dane organizacyjne
+st.markdown("## Dane organizacyjne")
+st.caption(
+    "Wprowadź liczbę uczestników i oceń doświadczenie kadry."
+    " Pozwoli to oszacować ryzyko związane z sytuacjami organizacyjnymi."
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    liczba_uczestnikow = st.number_input(
+        "Liczba uczestników",
+        min_value=1,
+        step=1,
+        value=20,
+        help="Liczba uczestników obozu (bez kadry).",
     )
-    st.success("Lokalizacja zapisana")
-    # zapis -> trigger dla weather pipeline
-    update_weather(lat, lon)
 
-# PODSUMOWANIE
-st.markdown("---")
-st.markdown("### Aktualna konfiguracja")
-
-cfg = st.session_state.location
-
-if cfg["lat"] is not None:
-    st.info(
-        f"""
-        **LAT:** {cfg['lat']:.4f}  
-        **LON:** {cfg['lon']:.4f}  
-        """
+with col2:
+    doswiadczenie_kadry = st.slider(
+        "Doświadczenie kadry",
+        min_value=0,
+        max_value=10,
+        value=5,
+        step=1,
+        help="""0 – małe doświadczenie, 10 – duże doświadczenie. 
+        Ogólna subiektywna ocena kadry. 
+        Należy wziąć pod uwagę ile osób było na obozie harcerskim i ile razy, 
+        umiejętności zarządzania i radzenia sobie w trudnych sytuacjach.""",
     )
-else:
-    st.warning("Lokalizacja nie została jeszcze ustawiona.")
+if st.button("Zapisz dane"):
+
+    if liczba_uczestnikow and doswiadczenie_kadry:
+        update_organization_risk(liczba_uczestnikow, doswiadczenie_kadry)
+        st.success("Dane zostały zapisane.")
+
+    else:
+        st.info("Przed zapisaniem ustaw dane.")

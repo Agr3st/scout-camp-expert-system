@@ -10,6 +10,7 @@ def init_session_state() -> None:
     Inicjalizuje wszystkie wymagane klucze w session_state.
     """
 
+    # Weather module
     if "location" not in st.session_state:
         st.session_state.location = {
             "lat": None,
@@ -24,6 +25,25 @@ def init_session_state() -> None:
 
     if "weather_risk_df" not in st.session_state:
         st.session_state.weather_risk_df = pd.DataFrame()
+
+    # Organization module
+    if "organization_df" not in st.session_state:
+        st.session_state.organization_df = pd.DataFrame(
+            columns=[
+                "liczba_uczestnikow",
+                "doswiadczenie_kadry",
+                "ryzyko_organizacyjne",
+            ]
+        )
+
+    if "organization_linguistic_df" not in st.session_state:
+        st.session_state.organization_linguistic_df = pd.DataFrame(
+            columns=[
+                "liczba_uczestnikow_linguistic",
+                "doswiadczenie_kadry_linguistic",
+                "ryzyko_organizacyjne_linguistic",
+            ]
+        )
 
 
 def get_closest_hour_df_row(df: pd.DataFrame) -> pd.Series:
