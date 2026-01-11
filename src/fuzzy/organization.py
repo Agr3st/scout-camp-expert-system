@@ -7,6 +7,9 @@ from skfuzzy.control import Antecedent, Consequent, Rule
 from src.fuzzy.base import BaseFuzzyModule
 from src.utils.config import load_config
 
+MAX_PARTICIPANTS = 120
+MIN_PARTICIPANTS = 0
+
 
 class OrganizationRiskModule(BaseFuzzyModule):
 
@@ -26,7 +29,9 @@ class OrganizationRiskModule(BaseFuzzyModule):
     @staticmethod
     def _create_variables() -> tuple[Antecedent, Antecedent, Consequent]:
         """Definicja zmiennych wejściowych i wyjściowych"""
-        liczba_uczestnikow = ctrl.Antecedent(np.arange(0, 121, 1), "liczba_uczestnikow")
+        liczba_uczestnikow = ctrl.Antecedent(
+            np.arange(MIN_PARTICIPANTS, MAX_PARTICIPANTS + 1, 1), "liczba_uczestnikow"
+        )
         doswiadczenie_kadry = ctrl.Antecedent(
             np.arange(0, 11, 1), "doswiadczenie_kadry"
         )
@@ -109,6 +114,10 @@ class OrganizationRiskModule(BaseFuzzyModule):
         return rules
 
     def interpret_participants(self, value: int) -> str:
+        if value >= 0:
+            value = min(value, MAX_PARTICIPANTS)
+        else:
+            value = max(value, MIN_PARTICIPANTS)
         return self._interpret(
             variable=self.liczba_uczestnikow,
             labels=["mała", "średnia", "duża"],

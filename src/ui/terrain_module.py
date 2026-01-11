@@ -1,9 +1,9 @@
 import streamlit as st
 
 from src.utils.config import load_config
-from src.utils.organization_orchestrator import (
-    check_organization_variables_existence,
-    create_organization_ui_dicts,
+from src.utils.terrain_orchestrator import (
+    check_terrain_variables_existence,
+    create_terrain_ui_dicts,
 )
 from src.utils.ui import variable_row
 
@@ -11,33 +11,31 @@ from src.utils.ui import variable_row
 config = load_config("config.yaml")
 linguistic_colors = config["linguistic_colors"]
 
-st.title("Moduł organizacyjny")
+st.title("Moduł Terenowy")
 
 st.caption(
-    "Ocena ryzyka organizacyjnego na podstawie liczby osób i doświadczenia kadry."
+    "Ocena ryzyka terenowego na podstawie odległości do bezpiecznego schronienia i trudności terenu."
 )
 
-check_organization_variables_existence()
+check_terrain_variables_existence()
 
-organization_inputs, output_risk = create_organization_ui_dicts()
+terrain_inputs, output_risk = create_terrain_ui_dicts()
 
-st.markdown("### Ryzyko organizacyjne")
+st.markdown("### Ryzyko terenowe")
 
 variable_row(
-    label="Poziom ryzyka organizacyjnego",
+    label="Poziom ryzyka terenowego",
     linguistic_value=output_risk["linguistic"],
-    linguistic_color=linguistic_colors["ryzyko_organizacyjne"][
-        output_risk["linguistic"]
-    ],
+    linguistic_color=linguistic_colors["ryzyko_terenowe"][output_risk["linguistic"]],
     numeric_label="Wartość liczbowa (0–100)",
     numeric_value=str(output_risk["value"]),
 )
 
 st.markdown("### Zmienne wejściowe")
 
-for var_name, var in organization_inputs.items():
+for var_name, var in terrain_inputs.items():
 
-    if var_name == "doswiadczenie_kadry":
+    if var_name == "trudnosc_terenu":
         numeric_label = "Wartość liczbowa (0-10)"
     else:
         numeric_label = "Wartość liczbowa"

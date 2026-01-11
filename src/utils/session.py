@@ -45,6 +45,25 @@ def init_session_state() -> None:
             ]
         )
 
+    # Terrain module
+    if "terrain_df" not in st.session_state:
+        st.session_state.terrain_df = pd.DataFrame(
+            columns=[
+                "odleglosc_od_schronienia",
+                "trudnosc_terenu",
+                "ryzyko_terenowe",
+            ]
+        )
+
+    if "terrain_linguistic_df" not in st.session_state:
+        st.session_state.terrain_linguistic_df = pd.DataFrame(
+            columns=[
+                "odleglosc_od_schronienia_linguistic",
+                "trudnosc_terenu_linguistic",
+                "ryzyko_terenowe_linguistic",
+            ]
+        )
+
 
 def get_closest_hour_df_row(df: pd.DataFrame) -> pd.Series:
     """

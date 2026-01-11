@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 import streamlit as st
 
 from src.utils.config import load_config
@@ -19,8 +21,17 @@ st.caption(
     "na podstawie prognozy meteorologicznej oraz logiki rozmytej."
 )
 
+
 check_weather_variables_existence()
 
+# ostatnia aktualizacja
+dt = st.session_state.weather_forecast_last_update
+
+if dt is not None:
+    dt_pl = dt.astimezone(ZoneInfo("Europe/Warsaw"))
+    st.markdown(f"🕒 **Ostatnia aktualizacja:** {dt_pl.strftime('%d.%m.%Y %H:%M:%S')}")
+
+# elementy
 weather_inputs, output_risk = create_weather_ui_dicts()
 
 st.markdown("### Stopień zagrożenia")

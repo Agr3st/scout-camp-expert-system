@@ -18,6 +18,11 @@ organization_module_page = st.Page(
     title="Moduł Organizacyjny",
     icon=":material/crown:",
 )
+terrain_module_page = st.Page(
+    "ui/terrain_module.py",
+    title="Moduł Terenowy",
+    icon=":material/map:",
+)
 input_page = st.Page("ui/input.py", title="Dane wejściowe", icon=":material/upload:")
 info_page = st.Page("ui/info.py", title="O systemie", icon=":material/info:")
 session_data_page = st.Page(
@@ -29,6 +34,7 @@ pg = st.navigation(
         cockpit_page,
         weather_module_page,
         organization_module_page,
+        terrain_module_page,
         input_page,
         info_page,
         session_data_page,
