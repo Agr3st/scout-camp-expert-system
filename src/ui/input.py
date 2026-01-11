@@ -2,9 +2,9 @@ import folium
 import streamlit as st
 from streamlit_folium import st_folium
 
-from src.utils.organization_orchestrator import update_organization_risk
-from src.utils.terrain_orchestrator import update_terrain_risk
-from src.utils.weather_orchestrator import update_weather
+from src.orchestrators.organization_orchestrator import update_organization_risk
+from src.orchestrators.terrain_orchestrator import update_terrain_risk
+from src.orchestrators.weather_orchestrator import update_weather
 
 POLAND_BOUNDS = {
     "south_west": [49.0, 14.1],

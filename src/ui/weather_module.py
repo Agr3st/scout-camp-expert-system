@@ -2,12 +2,12 @@ from zoneinfo import ZoneInfo
 
 import streamlit as st
 
-from src.utils.config import load_config
-from src.utils.ui import variable_row
-from src.utils.weather_orchestrator import (
+from src.orchestrators.weather_orchestrator import (
     check_weather_variables_existence,
     create_weather_ui_dicts,
 )
+from src.utils.config import load_config
+from src.utils.ui import variable_row
 
 # load configuration
 config = load_config("config.yaml")

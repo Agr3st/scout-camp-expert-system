@@ -1,7 +1,7 @@
 import streamlit as st
 
+from src.orchestrators.weather_orchestrator import refresh_weather
 from src.utils.session import init_session_state
-from src.utils.weather_orchestrator import refresh_weather
 
 init_session_state()
 

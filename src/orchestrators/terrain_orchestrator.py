@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.fuzzy.terrain import TerrainRiskModule
-from src.utils.camp_orchestrator import update_camp_risk
+from src.orchestrators.camp_orchestrator import update_camp_risk
 from src.utils.logger import setup_logger
 
 logger = setup_logger()
