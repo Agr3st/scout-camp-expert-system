@@ -13,3 +13,5 @@ scikit-fuzzy==0.5.0
 streamlit==1.51.0
 streamlit-folium==0.25.3
 tqdm==4.67.1
+scipy
+networkx
