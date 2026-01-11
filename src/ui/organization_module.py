@@ -19,7 +19,7 @@ st.caption(
 
 check_organization_variables_existence()
 
-weather_inputs, output_risk = create_organization_ui_dicts()
+organization_inputs, output_risk = create_organization_ui_dicts()
 
 st.markdown("### Ryzyko organizacyjne")
 
@@ -35,7 +35,7 @@ variable_row(
 
 st.markdown("### Zmienne wejściowe")
 
-for var_name, var in weather_inputs.items():
+for var_name, var in organization_inputs.items():
 
     if var_name == "doswiadczenie_kadry":
         numeric_label = "Wartość liczbowa (0-10)"
