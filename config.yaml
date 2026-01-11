@@ -3,6 +3,7 @@ logging:
   file: logs/app.log
 
 linguistic_colors:
+  
   # Moduł pogodowy
   wiatr:
     słaby: "#2ca02c"        # zielony
@@ -39,9 +40,25 @@ linguistic_colors:
   doswiadczenie_kadry:
     małe: "#d62728"        # zielony
     średnie: "#1f77b4"     # niebieski
-    duże: "#2ca02c"        # pomarańczowy
+    duże: "#2ca02c"        # zielony
 
   ryzyko_organizacyjne:
+    niskie: "#2ca02c"       # zielony
+    średnie: "#ff7f0e"      # niebieski
+    wysokie: "#d62728"      # czerwony
+
+  # Moduł terenowy
+  odleglosc_od_schronienia:
+    mała: "#2ca02c"      # zielony
+    średnia: "#ff7f0e"     # niebieski
+    duża: "#d62728"        # czerwony
+
+  trudnosc_terenu:
+    mała: "#2ca02c"        # zielony
+    średnia: "#ff7f0e"     # niebieski
+    duża: "#d62728"        # czerwony
+
+  ryzyko_terenowe:
     niskie: "#2ca02c"       # zielony
     średnie: "#ff7f0e"      # niebieski
     wysokie: "#d62728"      # czerwony
@@ -317,3 +334,52 @@ organization_rules:
       doswiadczenie_kadry: duże
     then:
       ryzyko_organizacyjne: średnie
+
+terrain_rules:
+  - if:
+      odleglosc_od_schronienia: mała
+      trudnosc_terenu: mała
+    then:
+      ryzyko_terenowe: niskie
+  - if:
+      odleglosc_od_schronienia: mała
+      trudnosc_terenu: średnia
+    then:
+      ryzyko_terenowe: niskie
+  - if:
+      odleglosc_od_schronienia: mała
+      trudnosc_terenu: duża
+    then:
+      ryzyko_terenowe: średnie
+
+  - if:
+      odleglosc_od_schronienia: średnia
+      trudnosc_terenu: mała
+    then:
+      ryzyko_terenowe: niskie
+  - if:
+      odleglosc_od_schronienia: średnia
+      trudnosc_terenu: średnia
+    then:
+      ryzyko_terenowe: średnie
+  - if:
+      odleglosc_od_schronienia: średnia
+      trudnosc_terenu: duża
+    then:
+      ryzyko_terenowe: wysokie
+
+  - if:
+      odleglosc_od_schronienia: duża
+      trudnosc_terenu: mała
+    then:
+      ryzyko_terenowe: średnie
+  - if:
+      odleglosc_od_schronienia: duża
+      trudnosc_terenu: średnia
+    then:
+      ryzyko_terenowe: wysokie
+  - if:
+      odleglosc_od_schronienia: duża
+      trudnosc_terenu: duża
+    then:
+      ryzyko_terenowe: wysokie

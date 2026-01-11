@@ -74,7 +74,7 @@ if "weather_risk_df" in st.session_state:
     )
 
 
-st.markdown("## Moduł organizacyjny")
+st.markdown("## Moduł Organizacyjny")
 
 if "organization_df" in st.session_state:
     render_dataframe(
@@ -86,4 +86,18 @@ if "organization_linguistic_df" in st.session_state:
     render_dataframe(
         "Dane organizacyjne i ocena ryzyka - wartości lingwistyczne",
         st.session_state.organization_linguistic_df,
+    )
+
+st.markdown("## Moduł Terenowy")
+
+if "terrain_df" in st.session_state:
+    render_dataframe(
+        "Dane terenowe i ocena ryzyka",
+        st.session_state.terrain_df,
+    )
+
+if "terrain_linguistic_df" in st.session_state:
+    render_dataframe(
+        "Dane terenowe i ocena ryzyka - wartości lingwistyczne",
+        st.session_state.terrain_linguistic_df,
     )

@@ -3,6 +3,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 
 from src.utils.organization_orchestrator import update_organization_risk
+from src.utils.terrain_orchestrator import update_terrain_risk
 from src.utils.weather_orchestrator import update_weather
 
 POLAND_BOUNDS = {
@@ -38,6 +39,17 @@ if len(cfg) > 0:
     )
 else:
     st.warning("Dane organizacyjne nie zostały jeszcze ustawione.")
+
+cfg = st.session_state.terrain_df
+if len(cfg) > 0:
+    st.info(
+        f"""
+        **Odległość od najbliższego schronienia:** {cfg.iloc[0]['odleglosc_od_schronienia']} m \n
+        **Trudność terenu (ocena 0-10):** {cfg.iloc[0]['trudnosc_terenu']}  
+        """
+    )
+else:
+    st.warning("Dane terenowe nie zostały jeszcze ustawione.")
 
 st.markdown("---")
 
@@ -165,10 +177,49 @@ with col2:
         Należy wziąć pod uwagę ile osób było na obozie harcerskim i ile razy, 
         umiejętności zarządzania i radzenia sobie w trudnych sytuacjach.""",
     )
-if st.button("Zapisz dane"):
+if st.button("Zapisz dane", key="organization"):
 
     if liczba_uczestnikow and doswiadczenie_kadry:
         update_organization_risk(liczba_uczestnikow, doswiadczenie_kadry)
+        st.success("Dane zostały zapisane.")
+
+    else:
+        st.info("Przed zapisaniem ustaw dane.")
+
+# Dane terenowe
+st.markdown("## Dane terenowe")
+st.caption(
+    "Wprowadź odległość do najbliższego schronienia i oceń trudność terenu."
+    " Pozwoli to oszacować ryzyko związane z warunkami terenowymi."
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    odleglosc_od_schronienia = st.number_input(
+        "Odległość od schronienia [m]",
+        min_value=1,
+        step=1,
+        value=100,
+        help="Odległość od obozu do bezpiecznego miejsca schronienia.",
+    )
+
+with col2:
+    trudnosc_terenu = st.slider(
+        "Trudność terenu",
+        min_value=0,
+        max_value=10,
+        value=5,
+        step=1,
+        help="""0 – mała, 10 – duża. 
+        Ogólna subiektywna ocena trudności terenu. 
+        Należy wziąć pod uwagę jakość dróg i ścieżek, górzystość, gęstość zalesienia
+        i inne czynniki wpływające na trudność przemieszczania się.""",
+    )
+if st.button("Zapisz dane", key="terrain"):
+
+    if odleglosc_od_schronienia and trudnosc_terenu:
+        update_terrain_risk(odleglosc_od_schronienia, trudnosc_terenu)
         st.success("Dane zostały zapisane.")
 
     else:
