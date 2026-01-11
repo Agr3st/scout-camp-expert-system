@@ -14,6 +14,12 @@ THUNDER_WEATHER_CODES = [
     96,
     99,
 ]  # kody dla burzy zgodnie z: https://open-meteo.com/en/docs#weather_variable_documentation
+MAX_WIND_SPEED = 25
+MIN_WIND_SPEED = 0
+MAX_TEMPERATURE = 40
+MIN_TEMPERATURE = 0
+MIN_RAIN = 0
+MAX_RAIN = 10
 
 
 class WeatherRiskModule(BaseFuzzyModule):
@@ -34,9 +40,13 @@ class WeatherRiskModule(BaseFuzzyModule):
     @staticmethod
     def _create_variables() -> tuple[Antecedent, Antecedent, Antecedent, Consequent]:
         """Definicja zmiennych wejściowych i wyjściowych"""
-        temperatura = ctrl.Antecedent(np.arange(0, 41, 1), "temperatura")
-        wiatr = ctrl.Antecedent(np.arange(0, 25, 0.1), "wiatr")
-        deszcz = ctrl.Antecedent(np.arange(0, 10, 0.1), "deszcz")
+        temperatura = ctrl.Antecedent(
+            np.arange(MIN_TEMPERATURE, MAX_TEMPERATURE + 1, 1), "temperatura"
+        )
+        wiatr = ctrl.Antecedent(
+            np.arange(MIN_WIND_SPEED, MAX_WIND_SPEED + 0.1, 0.1), "wiatr"
+        )
+        deszcz = ctrl.Antecedent(np.arange(MIN_RAIN, MAX_RAIN + 0.1, 0.1), "deszcz")
 
         # zmienna wyjsciowa
         zagrozenie = ctrl.Consequent(np.arange(0, 101, 1), "zagrozenie")
@@ -133,6 +143,10 @@ class WeatherRiskModule(BaseFuzzyModule):
         return min(risk_value, 100)
 
     def interpret_temperature(self, value: float) -> str:
+        if value >= 0:
+            value = min(value, MAX_TEMPERATURE)
+        else:
+            value = max(value, MIN_TEMPERATURE)
         return self._interpret(
             variable=self.temperatura,
             labels=["niska", "umiarkowana", "wysoka"],
@@ -140,6 +154,10 @@ class WeatherRiskModule(BaseFuzzyModule):
         )
 
     def interpret_wind(self, value: float) -> str:
+        if value >= 0:
+            value = min(value, MAX_WIND_SPEED)
+        else:
+            value = max(value, MIN_WIND_SPEED)
         return self._interpret(
             variable=self.wiatr,
             labels=["słaby", "umiarkowany", "silny", "wichura"],
@@ -154,6 +172,11 @@ class WeatherRiskModule(BaseFuzzyModule):
         """
         if value == 0.0:
             return "brak"
+
+        if value > 0:
+            value = min(value, MAX_RAIN)
+        else:
+            value = max(value, MIN_RAIN)
         return self._interpret(
             variable=self.deszcz,
             labels=["lekki", "umiarkowany", "ulewny"],
