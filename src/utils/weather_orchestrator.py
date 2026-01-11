@@ -22,6 +22,9 @@ def should_refresh_weather(interval_minutes: int = 30) -> bool:
 
 
 def update_weather(lat: float, lon: float) -> None:
+    if not isinstance(lat, float) or not isinstance(lon, float):
+        logger.info("Nie ustawiono lokalizacji. Nie można pobrać prognozy pogody.")
+        return
     logger.info(f"Pobieranie prognozy: lat={lat}, lon={lon}")
 
     forecast_df = get_hourly_weather_forecast(lat, lon)

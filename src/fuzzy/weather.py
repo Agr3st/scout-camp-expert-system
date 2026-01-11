@@ -4,10 +4,10 @@ import pandas as pd
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from skfuzzy.control import Antecedent, Consequent, Rule
-from src.utils.config import load_config
-from src.utils.logger import setup_logger
 
-logger = setup_logger()
+from src.fuzzy.base import BaseFuzzyModule
+from src.utils.config import load_config
+
 THUNDER_PENALTY = 20  # zmienna jakościowa (dodawane 20 pkt do finalnego zagrożenia)
 THUNDER_WEATHER_CODES = [
     95,
@@ -16,7 +16,7 @@ THUNDER_WEATHER_CODES = [
 ]  # kody dla burzy zgodnie z: https://open-meteo.com/en/docs#weather_variable_documentation
 
 
-class WeatherRiskModule:
+class WeatherRiskModule(BaseFuzzyModule):
 
     def __init__(self):
         self.temperatura, self.wiatr, self.deszcz, self.zagrozenie = (
@@ -84,9 +84,9 @@ class WeatherRiskModule:
         deszcz["ulewny"] = fuzz.trapmf(deszcz.universe, [6.5, 8.5, 10, 10])
 
         # ZAGROŻENIE: niskie, średnie, wysokie
-        zagrozenie["niskie"] = fuzz.trapmf(zagrozenie.universe, [0, 0, 25, 40])
-        zagrozenie["średnie"] = fuzz.trimf(zagrozenie.universe, [25, 50, 75])
-        zagrozenie["wysokie"] = fuzz.trapmf(zagrozenie.universe, [60, 75, 100, 100])
+        zagrozenie["niskie"] = fuzz.trapmf(zagrozenie.universe, [0, 0, 20, 50])
+        zagrozenie["średnie"] = fuzz.trimf(zagrozenie.universe, [20, 50, 80])
+        zagrozenie["wysokie"] = fuzz.trapmf(zagrozenie.universe, [50, 80, 100, 100])
 
     def _define_rules(
         self,
@@ -131,31 +131,6 @@ class WeatherRiskModule:
             risk_value += THUNDER_PENALTY
 
         return min(risk_value, 100)
-
-    def _interpret(
-        self, variable: Antecedent | Consequent, labels: list[str], value: float
-    ) -> str:
-        """
-        Zwraca etykietę lingwistyczną o najwyższym stopniu przynależności.
-
-        Parametry:
-            variable : skfuzzy.control.Antecedent lub Consequent
-            labels   : lista nazw zbiorów lingwistycznych
-            value    : wartość liczbowa
-
-        Zwraca:
-            str: etykieta lingwistyczna (np. 'umiarkowany')
-        """
-        memberships = {
-            label: fuzz.interp_membership(
-                variable.universe,
-                variable[label].mf,
-                value,
-            )
-            for label in labels
-        }
-
-        return max(memberships, key=memberships.get)
 
     def interpret_temperature(self, value: float) -> str:
         return self._interpret(

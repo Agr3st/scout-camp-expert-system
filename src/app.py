@@ -13,6 +13,11 @@ weather_module_page = st.Page(
     title="Moduł Pogodowy",
     icon=":material/partly_cloudy_day:",
 )
+organization_module_page = st.Page(
+    "ui/organization_module.py",
+    title="Moduł Organizacyjny",
+    icon=":material/crown:",
+)
 input_page = st.Page("ui/input.py", title="Dane wejściowe", icon=":material/upload:")
 info_page = st.Page("ui/info.py", title="O systemie", icon=":material/info:")
 session_data_page = st.Page(
@@ -20,7 +25,14 @@ session_data_page = st.Page(
 )
 
 pg = st.navigation(
-    [cockpit_page, weather_module_page, input_page, info_page, session_data_page]
+    [
+        cockpit_page,
+        weather_module_page,
+        organization_module_page,
+        input_page,
+        info_page,
+        session_data_page,
+    ]
 )
 pg.run()
 

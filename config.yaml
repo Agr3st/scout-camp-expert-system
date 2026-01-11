@@ -3,6 +3,7 @@ logging:
   file: logs/app.log
 
 linguistic_colors:
+  # Moduł pogodowy
   wiatr:
     słaby: "#2ca02c"        # zielony
     umiarkowany: "#1f77b4"  # niebieski
@@ -25,6 +26,22 @@ linguistic_colors:
     tak: "#d62728"          # czerwony
 
   zagrożenie:
+    niskie: "#2ca02c"       # zielony
+    średnie: "#ff7f0e"      # niebieski
+    wysokie: "#d62728"      # czerwony
+
+  # Moduł organizacyjny
+  liczba_uczestnikow:
+    mała: "#2ca02c"         # zielony
+    średnia: "#ff7f0e"      # niebieski
+    duża: "#d62728"         # czerwony
+
+  doswiadczenie_kadry:
+    małe: "#d62728"        # zielony
+    średnie: "#1f77b4"     # niebieski
+    duże: "#2ca02c"        # pomarańczowy
+
+  ryzyko_organizacyjne:
     niskie: "#2ca02c"       # zielony
     średnie: "#ff7f0e"      # niebieski
     wysokie: "#d62728"      # czerwony
@@ -251,3 +268,52 @@ weather_rules:
       deszcz: ulewny
     then:
       zagrozenie: wysokie
+
+organization_rules:
+  - if:
+      liczba_uczestnikow: mała
+      doswiadczenie_kadry: małe
+    then:
+      ryzyko_organizacyjne: średnie
+  - if:
+      liczba_uczestnikow: mała
+      doswiadczenie_kadry: średnie
+    then:
+      ryzyko_organizacyjne: niskie
+  - if:
+      liczba_uczestnikow: mała
+      doswiadczenie_kadry: duże
+    then:
+      ryzyko_organizacyjne: niskie
+
+  - if:
+      liczba_uczestnikow: średnia
+      doswiadczenie_kadry: małe
+    then:
+      ryzyko_organizacyjne: średnie
+  - if:
+      liczba_uczestnikow: średnia
+      doswiadczenie_kadry: średnie
+    then:
+      ryzyko_organizacyjne: niskie
+  - if:
+      liczba_uczestnikow: średnia
+      doswiadczenie_kadry: duże
+    then:
+      ryzyko_organizacyjne: niskie
+
+  - if:
+      liczba_uczestnikow: duża
+      doswiadczenie_kadry: małe
+    then:
+      ryzyko_organizacyjne: wysokie
+  - if:
+      liczba_uczestnikow: duża
+      doswiadczenie_kadry: średnie
+    then:
+      ryzyko_organizacyjne: wysokie
+  - if:
+      liczba_uczestnikow: duża
+      doswiadczenie_kadry: duże
+    then:
+      ryzyko_organizacyjne: średnie
