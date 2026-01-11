@@ -39,7 +39,7 @@ st.markdown("### Stopień zagrożenia")
 variable_row(
     label="Poziom zagrożenia pogodowego",
     linguistic_value=output_risk["linguistic"],
-    linguistic_color=linguistic_colors["zagrożenie"][output_risk["linguistic"]],
+    linguistic_color=linguistic_colors["zagrozenie"][output_risk["linguistic"]],
     numeric_label="Wartość liczbowa (0–100)",
     numeric_value=str(output_risk["value"]),
 )
@@ -50,7 +50,7 @@ for var_name, var in weather_inputs.items():
 
     if var_name == "burza":
         numeric_label = "Kod pogodowy"
-        numeric_value = str(var["value"])
+        numeric_value = str(int(var["value"]))
     else:
         numeric_label = "Wartość liczbowa"
         numeric_value = f"{var['value']:.1f} {var['unit']}"

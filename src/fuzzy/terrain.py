@@ -137,7 +137,7 @@ class TerrainRiskModule(BaseFuzzyModule):
         odleglosc_od_schronienia: int,
         trudnosc_terenu: int,
         visualize=False,
-    ) -> int:
+    ) -> float:
         """
         Oblicza ryzyko na podstawie wartości zmiennych wejściowych.
         """
@@ -148,7 +148,7 @@ class TerrainRiskModule(BaseFuzzyModule):
 
         sim.compute()
 
-        risk = int(sim.output["ryzyko_terenowe"])
+        risk = sim.output["ryzyko_terenowe"]
 
         if visualize:
             print("=== WIZUALIZACJA WNIOSKOWANIA ===")

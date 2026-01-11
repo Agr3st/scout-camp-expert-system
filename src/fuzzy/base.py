@@ -1,9 +1,7 @@
-from abc import ABC, abstractmethod
-from typing import Dict, List
+from abc import ABC
 
 import skfuzzy as fuzz
-from skfuzzy import control as ctrl
-from skfuzzy.control import Antecedent, Consequent, Rule
+from skfuzzy.control import Antecedent, Consequent
 
 
 class BaseFuzzyModule(ABC):
