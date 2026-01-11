@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.utils.camp_orchestrator import (
+from src.orchestrators.camp_orchestrator import (
     create_camp_ui_dicts,
 )
 from src.utils.config import load_config

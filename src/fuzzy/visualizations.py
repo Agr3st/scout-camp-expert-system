@@ -13,7 +13,7 @@ def plot_membership_function(variable, filename=None):
     variable: zmienna logiczna
     filename: nazwa pliku, zapisywany do katalogu `plots/`
     """
-    matplotlib.use("Agg")  # non-interactive, temporally
+    # matplotlib.use("Agg")  # non-interactive, temporally
     variable.view()
 
     ax = plt.gca()

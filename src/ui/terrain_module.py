@@ -1,10 +1,10 @@
 import streamlit as st
 
-from src.utils.config import load_config
-from src.utils.terrain_orchestrator import (
+from src.orchestrators.terrain_orchestrator import (
     check_terrain_variables_existence,
     create_terrain_ui_dicts,
 )
+from src.utils.config import load_config
 from src.utils.ui import variable_row
 
 # load configuration

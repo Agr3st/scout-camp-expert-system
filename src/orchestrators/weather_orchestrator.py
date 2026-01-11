@@ -3,8 +3,8 @@ from datetime import datetime, timedelta, timezone
 import streamlit as st
 
 from src.fuzzy.weather import WeatherRiskModule
+from src.orchestrators.camp_orchestrator import update_camp_risk
 from src.scraper.open_meteo import get_hourly_weather_forecast
-from src.utils.camp_orchestrator import update_camp_risk
 from src.utils.logger import setup_logger
 from src.utils.session import get_closest_hour_df_row
 

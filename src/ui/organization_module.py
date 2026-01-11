@@ -1,10 +1,10 @@
 import streamlit as st
 
-from src.utils.config import load_config
-from src.utils.organization_orchestrator import (
+from src.orchestrators.organization_orchestrator import (
     check_organization_variables_existence,
     create_organization_ui_dicts,
 )
+from src.utils.config import load_config
 from src.utils.ui import variable_row
 
 # load configuration
