@@ -25,6 +25,106 @@ This project is developed as part of my **engineering thesis** at
 - ✅ **Automated data orchestration and session-based state management**.  
 - ✅ **Interactive desktop prototype built with Streamlit**.  
 
+## System Architecture
+
+The **Scout Camp Guardian** system is designed as a **multi-level, modular expert system** based on fuzzy logic.  
+Its architecture follows the principle of **separation of concerns**, enabling scalability, reusability, and independent development of individual decision modules.
+
+The system is composed of three main layers:
+
+---
+
+### 1️⃣ Data Acquisition Layer
+
+This layer is responsible for collecting and preparing raw input data required by the expert system.
+
+- Weather data is retrieved from the **Open-Meteo API** using a dedicated scraper module.
+- Forecast data is processed into structured pandas DataFrames with proper timezone handling.
+- User-defined inputs (e.g. camp location, organizational parameters) are collected via the Streamlit UI.
+- All acquired data is stored in the **Streamlit session state**, ensuring consistency across application views.
+
+📁 *Key components*:
+- `scraper/open_meteo.py`
+- `utils/session.py`
+- `ui/input.py`
+
+---
+
+### 2️⃣ Fuzzy Inference Layer
+
+The core decision-making logic is implemented in this layer.  
+It consists of **independent fuzzy logic modules**, each responsible for evaluating a specific aspect of camp safety.
+
+#### First-Level Modules
+
+These modules operate on raw or lightly processed input data and generate interpretable risk indicators:
+
+- **Weather Module**  
+  Assesses weather-related risk based on variables such as temperature, wind, precipitation, and thunderstorm conditions.
+
+- **Organizational Module**  
+  Evaluates organizational risk using parameters such as number of participants and staff experience.
+
+- **Terrain Module**  
+  Estimates camp vulnerability based on terrain difficulty and evacuation conditions.
+
+Each module outputs a **linguistic and numerical risk value** (e.g. *low*, *medium*, *high*).
+
+📁 *Key components*:
+- `fuzzy/weather.py`
+- `fuzzy/organization.py`
+- `fuzzy/terrain.py`
+- `fuzzy/base.py`
+
+---
+
+### 3️⃣ High-Level Aggregation Layer
+
+At the highest level, outputs from first-level modules are combined into a **global camp risk assessment**.
+
+- The **Camp Risk Module** receives fuzzy outputs from subordinate modules.
+- It performs a second-stage fuzzy inference to determine the **overall camp safety status**.
+- This hierarchical approach allows the system to model complex dependencies and uncertainty propagation.
+
+📁 *Key components*:
+- `fuzzy/camp.py`
+- `orchestrators/camp_orchestrator.py`
+
+---
+
+### 4️⃣ Orchestration and State Management
+
+The system uses dedicated **orchestrator modules** to manage execution flow:
+
+- Triggering data refresh cycles (e.g. weather updates).
+- Executing fuzzy inference pipelines.
+- Updating shared application state.
+
+📁 *Key components*:
+- `orchestrators/weather_orchestrator.py`
+- `orchestrators/organization_orchestrator.py`
+- `orchestrators/terrain_orchestrator.py`
+
+---
+
+### 5️⃣ Presentation Layer
+
+The user interface is implemented using **Streamlit** and provides:
+
+- Real-time visualization of module inputs and outputs.
+- Human-readable linguistic interpretations.
+- Time-series risk charts.
+- Diagnostic views (session data).
+
+📁 *Key components*:
+- `ui/weather_module.py`
+- `ui/organization_module.py`
+- `ui/terrain_module.py`
+- `ui/cockpit.py`
+- `ui/session_data.py`
+
+---
+
 ## Installation
 
 ### Clone the repository
