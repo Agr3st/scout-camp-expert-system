@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.fuzzy.organization import OrganizationRiskModule
+from src.utils.camp_orchestrator import update_camp_risk
 from src.utils.logger import setup_logger
 
 logger = setup_logger()
@@ -37,6 +38,9 @@ def update_organization_risk(liczba_uczestnikow: int, doswiadczenie_kadry: int) 
     )
 
     logger.info("Zaktualizowano ryzyko organizacyjne.")
+
+    # trigger
+    update_camp_risk()
 
 
 def create_organization_ui_dicts() -> tuple[dict, dict]:

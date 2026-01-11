@@ -28,7 +28,7 @@ variable_row(
     linguistic_value=output_risk["linguistic"],
     linguistic_color=linguistic_colors["ryzyko_terenowe"][output_risk["linguistic"]],
     numeric_label="Wartość liczbowa (0–100)",
-    numeric_value=str(output_risk["value"]),
+    numeric_value=str(int(output_risk["value"])),
 )
 
 st.markdown("### Zmienne wejściowe")
@@ -39,7 +39,7 @@ for var_name, var in terrain_inputs.items():
         numeric_label = "Wartość liczbowa (0-10)"
     else:
         numeric_label = "Wartość liczbowa"
-    numeric_value = f"{var['value']} {var['unit']}"
+    numeric_value = f"{int(var['value'])} {var['unit']}"
 
     variable_row(
         label=var["label"],

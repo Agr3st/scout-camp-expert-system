@@ -4,6 +4,7 @@ import streamlit as st
 
 from src.fuzzy.weather import WeatherRiskModule
 from src.scraper.open_meteo import get_hourly_weather_forecast
+from src.utils.camp_orchestrator import update_camp_risk
 from src.utils.logger import setup_logger
 from src.utils.session import get_closest_hour_df_row
 
@@ -36,6 +37,9 @@ def update_weather(lat: float, lon: float) -> None:
     st.session_state["weather_risk_df"] = risk_df
     st.session_state["weather_forecast_last_update"] = datetime.now(timezone.utc)
     logger.info("Zaktualizowano dane pogodowe.")
+
+    # trigger
+    update_camp_risk()
 
 
 @st.fragment(run_every="1m")

@@ -26,7 +26,7 @@ linguistic_colors:
     nie: "#2ca02c"          # zielony
     tak: "#d62728"          # czerwony
 
-  zagrożenie:
+  zagrozenie:
     niskie: "#2ca02c"       # zielony
     średnie: "#ff7f0e"      # niebieski
     wysokie: "#d62728"      # czerwony
@@ -59,6 +59,12 @@ linguistic_colors:
     duża: "#d62728"        # czerwony
 
   ryzyko_terenowe:
+    niskie: "#2ca02c"       # zielony
+    średnie: "#ff7f0e"      # niebieski
+    wysokie: "#d62728"      # czerwony
+
+  # Moduł Ryzyka obozowego (2. poziom)
+  ryzyko_obozowe:
     niskie: "#2ca02c"       # zielony
     średnie: "#ff7f0e"      # niebieski
     wysokie: "#d62728"      # czerwony
@@ -383,3 +389,172 @@ terrain_rules:
       trudnosc_terenu: duża
     then:
       ryzyko_terenowe: wysokie
+
+camp_rules:
+  # --- GRUPA 1: zagrozenie: niskie ---
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: niskie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: niskie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: niskie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: niskie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: niskie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: średnie
+
+  # --- GRUPA 2: zagrozenie: średnie ---
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: średnie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: wysokie
+
+  # --- GRUPA 3: zagrozenie: wysokie ---
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: średnie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: niskie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: średnie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: niskie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: średnie
+    then:
+      ryzyko_obozowe: wysokie
+  - if:
+      zagrozenie: wysokie
+      ryzyko_organizacyjne: wysokie
+      ryzyko_terenowe: wysokie
+    then:
+      ryzyko_obozowe: wysokie

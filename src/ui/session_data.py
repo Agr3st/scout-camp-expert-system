@@ -101,3 +101,15 @@ if "terrain_linguistic_df" in st.session_state:
         "Dane terenowe i ocena ryzyka - wartości lingwistyczne",
         st.session_state.terrain_linguistic_df,
     )
+
+st.markdown("## Moduł 2-poziomu - ryzyko obozowe")
+if "camp_risk" in st.session_state:
+    render_value(
+        "Ryzyko obozowe",
+        st.session_state.camp_risk,
+    )
+if "camp_risk_linguistic" in st.session_state:
+    render_value(
+        "Ryzyko obozowe - wartość lingwistyczna",
+        st.session_state.camp_risk_linguistic,
+    )
