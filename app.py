@@ -6,27 +6,29 @@ from src.utils.session import init_session_state
 init_session_state()
 
 cockpit_page = st.Page(
-    "ui/cockpit.py", title="Kokpit", icon=":material/home:", default=True
+    "src/ui/cockpit.py", title="Kokpit", icon=":material/home:", default=True
 )
 weather_module_page = st.Page(
-    "ui/weather_module.py",
+    "src/ui/weather_module.py",
     title="Moduł Pogodowy",
     icon=":material/partly_cloudy_day:",
 )
 organization_module_page = st.Page(
-    "ui/organization_module.py",
+    "src/ui/organization_module.py",
     title="Moduł Organizacyjny",
     icon=":material/crown:",
 )
 terrain_module_page = st.Page(
-    "ui/terrain_module.py",
+    "src/ui/terrain_module.py",
     title="Moduł Terenowy",
     icon=":material/map:",
 )
-input_page = st.Page("ui/input.py", title="Dane wejściowe", icon=":material/upload:")
-info_page = st.Page("ui/info.py", title="O systemie", icon=":material/info:")
+input_page = st.Page(
+    "src/ui/input.py", title="Dane wejściowe", icon=":material/upload:"
+)
+info_page = st.Page("src/ui/info.py", title="O systemie", icon=":material/info:")
 session_data_page = st.Page(
-    "ui/session_data.py", title="Dane sesji", icon=":material/browse_activity:"
+    "src/ui/session_data.py", title="Dane sesji", icon=":material/browse_activity:"
 )
 
 pg = st.navigation(
