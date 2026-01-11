@@ -4,18 +4,26 @@ Fuzzy Logic Multilevel Expert System for Scout Camp Safety
 
 ## 📌 Project Overview
 
-**Scout Camp Guardian** is an expert system based on fuzzy logic, designed to support the coordination and safety management of scout camps.  
-The system continuously monitors weather conditions and evaluates potential threats to camp safety. Based on fuzzy inference, it generates **risk levels** for camp staff.
+**Scout Camp Guardian** is a modular expert system based on **fuzzy logic**, designed to support decision-making, coordination, and safety management in scout camps.
 
-This project is part of my engineering thesis at **AGH University of Science and Technology (Data Science)**.
+The system evaluates multiple aspects influencing camp safety — such as **weather conditions**, **organizational readiness**, and **terrain** — and integrates them into a **multi-level fuzzy inference architecture**.  
+Each module produces an interpretable risk assessment, which is then combined into a higher-level evaluation of the **overall camp risk**.
+
+The application provides camp leaders with **clear, human-readable risk levels** (e.g. low / medium / high), supporting timely and informed operational decisions, especially under uncertain and dynamic conditions.
+
+This project is developed as part of my **engineering thesis** at  
+**AGH University of Science and Technology (Data Science)**.
 
 ---
 
-## Features
+## Key Features
 
-- ✅ Real-time weather data monitoring via API (OpenWeatherMap/IMGW).  
-- ✅ Fuzzy logic-based risk assessment (low / medium / high).  
-- ✅ Simple desktop prototype (Streamlit).  
+- ✅ **Multi-level fuzzy expert system** (hierarchical risk assessment).  
+- ✅ **Weather-based risk analysis** using real-time forecast data (Open-Meteo API).  
+- ✅ **Organizational and infrastructure risk modules** (personnel experience, terrain, evacuation conditions).  
+- ✅ **Human-interpretable linguistic variables** (e.g. *strong wind*, *high risk*).  
+- ✅ **Automated data orchestration and session-based state management**.  
+- ✅ **Interactive desktop prototype built with Streamlit**.  
 
 ## Installation
 
@@ -34,6 +42,7 @@ cd scout-camp-expert-system
 ```bash
 python3 -m venv .venv
 ```
+
 ```bash
 source .venv/bin/activate
 ```
@@ -43,7 +52,8 @@ source .venv/bin/activate
 ```bash
 pip install --upgrade pip
 ```
-```
+
+```bash
 pip install -r requirements.txt
 ```
 
@@ -54,8 +64,9 @@ From the project root directory:
 ```bash
 export PYTHONPATH=$(pwd)
 ```
+
 ```bash
-streamlit run src/app.py
+streamlit run app.py
 ```
 
 ### On Windows
@@ -63,41 +74,53 @@ streamlit run src/app.py
 ```powershell
 $env:PYTHONPATH = (Get-Location)
 ```
+
 ```powershell
-streamlit run src/app.py
+streamlit run app.py
 ```
 
 ## Project structure
 
-```
+```md
 scout-camp-expert-system/
 ├── src/
-│   ├── fuzzy/
-│   │   ├── visualizations.py      # Fuzzy logic visualization utilities (membership functions, inference plots)
-│   │   └── weather.py             # Weather fuzzy logic system (variables, rules, risk assessment)
-│   │
-│   ├── scraper/
-│   │   ├── __init__.py
-│   │   └── open_meteo.py          # Open-Meteo API client and weather forecast data parsing
-│   │
-│   ├── ui/
-│   │   ├── cockpit.py             # Main dashboard (system overview)
-│   │   ├── info.py                # Application information and documentation page
-│   │   ├── input.py               # User input page (location, module configuration)
-│   │   ├── session_data.py        # Debug/inspection view of Streamlit session_state
-│   │   └── weather_module.py      # Weather module UI (risk display, charts, inputs)
-│   │
-│   ├── utils/
-│   │   ├── config.py              # Configuration loading utilities (YAML, paths)
-│   │   ├── logger.py              # Centralized application logging setup
-│   │   ├── session.py             # Streamlit session_state initialization and helpers
-│   │   ├── ui.py                  # Reusable UI components (chips, rows, widgets)
-│   │   └── weather_orchestrator.py# Weather module orchestration and helpers
-│   │
-│   ├── __init__.py
-│   └── app.py                     # Streamlit application entry point and navigation
+│ ├── fuzzy/
+│ │ ├── base.py             # Base classes for fuzzy logic modules
+│ │ ├── weather.py          # Weather risk module
+│ │ ├── organization.py     # Organization risk module
+│ │ ├── terrain.py          # Terrain risk module
+│ │ ├── camp.py             # High-level camp risk module
+│ │ └── visualizations.py   # Fuzzy visualizations
+│ │
+│ ├── orchestrators/
+│ │ ├── weather_orchestrator.py         # Weather data → fuzzy weather risk pipeline
+│ │ ├── organization_orchestrator.py    # Organization input → organization risk
+│ │ ├── terrain_orchestrator.py         # Terrain → vulnerability
+│ │ └── camp_orchestrator.py            # Aggregates all risks into camp risk
+│ │
+│ ├── scraper/
+│ │ └── open_meteo.py  # Open-Meteo API client and weather data parsing
+│ │
+│ ├── ui/
+│ │ ├── cockpit.py              # Main dashboard view (1. and 2. level results)
+│ │ ├── weather_module.py       # Weather module UI
+│ │ ├── organization_module.py  # Organization module UI
+│ │ ├── terrain_module.py       # Terrain module UI
+│ │ ├── input.py                # User input forms (location, organization data, etc.)
+│ │ ├── session_data.py         # Debug view of Streamlit session state
+│ │ └── info.py                 # About / documentation page
+│ │
+│ ├── utils/
+│ │ ├── config.py  # Config loading (YAML)
+│ │ ├── logger.py  # Centralized logging setup
+│ │ ├── session.py # Streamlit session_state initialization
+│ │ └── ui.py      # Reusable UI components (chips, rows, etc.)
+│ │
+│ │
+│ ├── app.py # Streamlit app entry point
+│ └── init.py
 │
-├── config.yaml                    # Global application configuration
-├── README.md                      # Project documentation and setup instructions
-└── requirements.txt               # Python dependencies
+├── config.yaml      # Global configuration (colors, logging, rules)
+├── README.md        # Project documentation
+└── requirements.txt # Python dependencies
 ```
