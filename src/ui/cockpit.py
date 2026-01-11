@@ -30,9 +30,7 @@ if st.session_state.camp_risk:
     )
 else:
     st.info(
-        "Nie można obliczyć ryzyka obozowego (zmiennej 2-poziomu), "
-        "ponieważ wymagane są wszystkie zmienne wejściowe: "
-        "zagrożenie pogodowe, ryzyko organizacyjne, ryzyko terenowe."
+        "Aby umożliwić oszacowanie ryzyka obozowego, należy wprowadzić dane wejściowe."
     )
 
 
