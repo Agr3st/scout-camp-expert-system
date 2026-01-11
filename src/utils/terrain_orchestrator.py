@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from src.fuzzy.terrain import TerrainRiskModule
+from src.utils.camp_orchestrator import update_camp_risk
 from src.utils.logger import setup_logger
 
 logger = setup_logger()
@@ -37,6 +38,9 @@ def update_terrain_risk(odleglosc_od_schronienia: int, trudnosc_terenu: int) -> 
     )
 
     logger.info("Zaktualizowano ryzyko terenowe.")
+
+    # trigger
+    update_camp_risk()
 
 
 def create_terrain_ui_dicts() -> tuple[dict, dict]:

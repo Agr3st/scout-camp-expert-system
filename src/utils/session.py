@@ -64,6 +64,12 @@ def init_session_state() -> None:
             ]
         )
 
+    # Camp risk module (2-level)
+    if "camp_risk" not in st.session_state:
+        st.session_state.camp_risk = None
+    if "camp_risk_linguistic" not in st.session_state:
+        st.session_state.camp_risk_linguistic = None
+
 
 def get_closest_hour_df_row(df: pd.DataFrame) -> pd.Series:
     """
