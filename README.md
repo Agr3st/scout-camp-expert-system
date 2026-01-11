@@ -217,8 +217,7 @@ scout-camp-expert-system/
 │ │ └── ui.py      # Reusable UI components (chips, rows, etc.)
 │ │
 │ │
-│ ├── app.py # Streamlit app entry point
-│ └── init.py
+│ └── app.py # Streamlit app entry point
 │
 ├── config.yaml      # Global configuration (colors, logging, rules)
 ├── README.md        # Project documentation
