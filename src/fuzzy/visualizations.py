@@ -13,7 +13,7 @@ def plot_membership_function(variable, filename=None):
     variable: zmienna logiczna
     filename: nazwa pliku, zapisywany do katalogu `plots/`
     """
-    # matplotlib.use("Agg")  # non-interactive, temporally
+    matplotlib.use("Agg")  # non-interactive, temporally
     variable.view()
 
     ax = plt.gca()
@@ -42,10 +42,11 @@ def plot_membership_function(variable, filename=None):
 
 
 def plot_heatmap_slice(
-    system,
+    fuzzy_module,
     var_x_name,
     var_y_name,
     var_fixed_name,
+    var_fixed_labels,
     fixed_values,
     step_x=1.0,
     step_y=1.0,
@@ -56,6 +57,7 @@ def plot_heatmap_slice(
     Opcjonalnie zapisuje figurę do katalogu plots pod nazwą filename.
     """
     matplotlib.use("Agg")  # non-interactive, temporally
+    system = fuzzy_module.system
     sim = ctrl.ControlSystemSimulation(system)
 
     all_antecedents = {a.label: a for a in sim.ctrl.antecedents}
@@ -126,7 +128,7 @@ def plot_heatmap_slice(
         final_im = im
 
         axes[k].set_title(
-            f'{var_fixed_name.capitalize()}: {fixed_val:.1f} {UNIT_MAP.get(var_fixed_name, "")}'
+            f'{var_fixed_name.capitalize()}: {fixed_val:.1f} {UNIT_MAP.get(var_fixed_name, "")}  - {var_fixed_labels[k]}'
         )
         axes[k].set_xlabel(f'{var_x_name.capitalize()} {UNIT_MAP.get(var_x_name, "")}')
 
